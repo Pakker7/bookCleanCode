@@ -31,11 +31,11 @@
   - entity
   - usecase
 - POJO
-  - 스프링 프레임 워크를 뺴고 나서도 실행되는... 옛날의..
+  - 스프링 프레임 워크를 뺴고 나서도 실행되는... 옛날의.. 순수한.. 자바....
 - yml
   - http://anitoy.pe.kr/yaml-format/ 참고
   - 설정 저장하는 xml보다 쉽게 되어있음
--AspectJ
+- AspectJ
   - java --compile--> byte코드로 만듬(.javac) ... 이런식으로 변환
   - 위의 경우의 사이에서 BCI라는 기술을 사용하여, byte코드로 컴파일 하는 그 사이에 byte코드를 넣는거?
 
