@@ -15,14 +15,13 @@
   - 정적 공개 상수 static public 
   - 정적 비공개 변수 static private
   - 비공개 인스턴스 변수
-  - 공개 변수가 필요한 경우는 거의 없다 ->?
+  - 공개 변수가 필요한 경우는 거의 없다 -> 이런경우 static을 사용하니깐
 
-변수 목록 다음에는 공개함수가 나온다.
-비공개(private) 함수는 자신을 호출하는 공개함수 직후에 넣는다..?
- 
+ ```
 접근제어자 반환타입 메소드이름(매개변수목록) { // 선언부
     // 구현부
 }
+```
 
 ### 캡슐화
 캡슐화의 정의를 보면 필요한 속성(Attribute) 와 행위(Method) 를 하나로 묶는 작업.
@@ -298,9 +297,41 @@ public class PrimeGenerator {
 새 기능을 수정하거나 기존 기능을 변경할 때 건드릴 코드가 최소인 시스템 구조가 바람직하다. 이상적 인 시스템 이라면 새 기능을 추가할 때 시스템을 확장할 뿐 기존 코드를 변경하지는 않는다
 
 
-
-
-
 ### 변경으로부터 격리
+<pre>
+<code>
+// Portfolio 클래스를 구현하자, 그런데 이 클래스는 외부 TokyoStockExchange API를 사용해 포트폴리오 값을 계산한다.
+// 따라서 API 특성 상 시세 변화에 영향을 많이 받아 5분마다 값이 달라지는데, 이때문에 테스트 코드를 짜기 쉽지 않다.
+// 그러므로 Portfolio에서 외부 API를 직접 호출하는 대신 StockExchange라는 인터페이스를 생성한 후 메서드를 선언하다.
 
+public interface StockExchange { 
+	Money currentPrice(String symbol);
+}
+</code>
+</pre>
+이렇게 interface 로 넘기면 모키토 등을 사용하여 테스트 코드를 작성 할 수 있다
+<pre>
+<code>
+// 이제 TokyoStockExchange 클래스를 흉내내는 테스트용 클래스를 만들 수 있다.(FixedStockExchangeStub)
+// 테스트용 클래스는 StockExchange 인터페이스를 구현하며 고정된 주가를 반환한다.
+// 그럼으로써 무난히 테스트 코드를 작성 할 수 있다.
 
+public class PortfolioTest {
+	private FixedStockExchangeStub exchange;
+	private Portfolio portfolio;
+	
+	@Before
+	protected void setUp() throws Exception {
+		exchange = new FixedStockExchangeStub(); 
+		exchange.fix("MSFT", 100);
+		portfolio = new Portfolio(exchange);
+	}
+
+	@Test
+	public void GivenFiveMSFTTotalShouldBe500() throws Exception {
+		portfolio.add(5, "MSFT");
+		Assert.assertEquals(500, portfolio.value()); 
+	}
+}
+</code>
+</pre>
