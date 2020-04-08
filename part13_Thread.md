@@ -56,7 +56,7 @@
   - 경마 게임
   
   ```java
-    public class HorseRacing extends Thread{
+  public class HorseRacing extends Thread{
     private int horseTotalNum;
 
     public HorseRacing() {}
@@ -86,7 +86,7 @@
   }
   ```
   ```java
-    public class Game {
+  public class Game {
 
     public static void main(String[] args) {
 
