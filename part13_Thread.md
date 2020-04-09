@@ -1,7 +1,7 @@
 ### Thread
-- 자바의신
+- 자바의신 및 여러 인터넷 블로그
 
-
+#### 기본 동작
 - 동작?
   - Thread를 시작하는 메소드는 start()
   - Thread가 시작하면 수행되는 메소드는 run()
@@ -103,7 +103,105 @@
   }
   ```
   
+#### synchronized
+- 사용 이유 
+  - 안전하게 하기 위해..?
+  - 
+- 사용 방법
+  - 메소드 자체를 synchronized로 선언
+  - 메소드 내의 특정 문장만 synchronized로 감싸기
+
+##### 메소드 자체를 synchronized로 선언
+  - 여러 쓰레드가 한 객체에 선언된 메소드에 접근하여 데이터를 처리하려고 할 때 동시에 연산을 수행하여 값이 꼬이는 경우가 발생할 수 있음
+  - 당연히 매개변수,메소드에서 사용하는 지역변수는 문제가 없지만, 공유하는 인스턴스 변수를 수정할 시 문제가 됨
   
+  ```java
+  public class CommonCalculate {
+
+    private int amount;
+
+    public CommonCalculate() {
+      amount = 0;
+    }
+
+    public void plus(int value) {
+      amount += value;
+    }
+
+    public void minus(int value) {
+      amount -=value;
+    }
+
+    public int getAmount() {
+      return amount;
+    }
+  }
+  ```
+  ```java
+  public class ModifyAmountThread extends Thread{
+	
+    private CommonCalculate calc;
+    private Boolean addFlag;
+
+    public ModifyAmountThread() {
+    }
+
+    public ModifyAmountThread(CommonCalculate calc, Boolean addFlag) {
+      this.calc = calc;
+      this.addFlag = addFlag;
+    }
+
+    @Override
+    public void run() {
+
+      for (int i = 0; i < 10000; i++) {
+        if(addFlag) {
+          calc.plus(1);
+        } else {
+          calc.minus(1);
+        }
+
+      }
+    }
+  }
+  ```
+  ```java
+  public class RunSync {
+
+    public static void main(String[] args) {
+      RunSync runSync = new RunSync();
+      runSync.runCommonCalculate();
+    }
+
+    public void runCommonCalculate() {
+      CommonCalculate calc = new CommonCalculate();
+      ModifyAmountThread thread1 = new ModifyAmountThread(calc, true);
+      ModifyAmountThread thread2 = new ModifyAmountThread(calc, true);
+
+      thread1.start();
+      thread2.start();
+
+      try {
+        thread1.join(); // thread 종료될때까지 기다림
+        thread2.join();
+        System.out.println("final value is " + calc.getAmount());
+
+      } catch (Exception e) {
+        e.printStackTrace();
+
+      }
+    }
+  }
+  ```
+  ```
+  * 실행 결과 
+  final value is 12913... // 20000 이 안나옴..
+  ```
+  - thread1이 도는 동시에 thread2 가 돌기 때문에 예상되는 결과와 다르게 나옴... 이럴 때 이렇게 synchronized를 붙이면 됨
+  ```java
+  public synchronized void plus(int value) {
+		amount += value;
+	}
+  ```
   
-  
-  
+##### 메소드 내의 특정 문장만 synchronized로 감싸기
