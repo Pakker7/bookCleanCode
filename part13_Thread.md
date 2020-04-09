@@ -205,3 +205,32 @@
   ```
   
 ##### 메소드 내의 특정 문장만 synchronized로 감싸기
+- 메소드자제에 synchronized를 쓰면 효율성이 떨어질 수 있다.
+  - ex. 메소드가 30줄이라 가정 했을 때 amount 변수를 딱 한줄에서만 다룬다면? 이 부분만 하는게 효율적임
+  ```java
+	Object lock = new Object();
+	public void plus(int value) {
+		synchronized (lock) {		// 잠금용 객체
+						// 하나의 쓰레드만 일을 할 수 있도록 허용
+			amount += value;	// 중괄호 내에 있는 연산만 동시에 여러쓰레드에서 처리하지 않겠다는 의미
+		}
+	}
+
+	public void minus(int value) {
+		synchronized (lock) {
+			amount -=value;
+		}
+	}
+  ```
+  - 근데 lock 이라는 객체를 여러번 곳에 사용하면, 다른 변수임에도 불구하고 다같이 끝날 때 까지 기다려야함..  그래서 각자 사용하는 곳마다 객체를 만들어서 쓰는게 좋음
+  
+
+##### 쉽게 하는 실수
+- synchronized 시에 calc라는 같은 객체를 참조했다. 이때에만 synchronized가 유효하다.
+- 다른 객체 참조할 때는 synchronized를 안써도 되겠지?
+```java
+CommonCalculate calc = new CommonCalculate();
+ModifyAmountThread thread1 = new ModifyAmountThread(calc, true);
+ModifyAmountThread thread2 = new ModifyAmountThread(calc, true);
+```
+
