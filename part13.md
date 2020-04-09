@@ -1,8 +1,6 @@
 ### 동시성
 
-쓰레드를 아직 써본적이 없다?!
-쓰레드를 공부하고나서 나머지 해야지..
-
+#### 동시성이 필요한 이유
 - 동시성에 대한 사실
   - 동시성은 항상 성능을 높여주지 않는다.
     - 대기 시간이 아주 길어 여러 스레드가 프로세서를 공유할 수 있거나, 여러 프로세서가 동시에 처리할 독립적인 계산이 충분히 많은 경우에만 성능이 높아진다
@@ -15,13 +13,78 @@
     - 진짜 결함으로 간주되지 않고, 일회성으로 여겨져 넘어갈수 있다.
   - 동시성 구현은 근본적인 설계전략을 재고해야한다.
   
-스레드는 꼭 독립적인 코드로 구현해라
+#### 동시성 방어 원칙 
+동시성 코드가 일으키는 문제로부터 시스템을 방어하는 원칙과 기술
 
+- 단일 책임 원칙
+  - 항상 이야기 한 것이지만 더욱 정신차리고 원칙대로 할 것
+  - 스레드는 꼭 독립적인 코드로 구현해라
+- 자료 범위를 제한하라
+  - 공유 객체를 사용하는 코드 내 임계영역을 synchronized 키워드로 보호할 수도 있지만.. 이런 공유하는 부분을 최대한 줄이는게 제일 좋다.
+    - https://github.com/Pakker7/bookCleanCode/blob/master/part13_Thread.md#synchronized
+  - 자료의 캡슐화, 공유자료 최대한 줄이기
+- 자료 사본 사용하기
+  - 읽기전용으로 사용
+    - Collections.unmodifiableList()
+    - 읽기 전용으로 만든 후에는 수정하면 예외처리
+    ```java 
+    public class CollectionsTest {
+
+      public static void main(String[] argv) throws Exception { 
+
+        try { 
+          Hashtable<String, String> table = new Hashtable<String, String>(); 
+          table.put("key1", "1"); 
+          table.put("key2", "2"); 
+          table.put("key3", "3"); 
+
+                Map<String, String> m = Collections.unmodifiableMap(table);  // 사용 법
+
+                System.out.println("Initial collection: " + table); 
+
+                System.out.println("\nTrying to modify" + " the unmodifiablemap"); 
+          m.put("key4", "4"); 
+
+        } catch (UnsupportedOperationException e) { 
+          System.out.println("Exception thrown : " + e); 
+        } 
+      } 
+    }
+    ```
+    ```
+    * 결과
+    Initial collection: {key3=3, key2=2, key1=1}
+    
+    Trying to modify the unmodifiablemap
+    Exception thrown : java.lang.UnsupportedOperationException
+    ```
+  - 각 쓰레드가 객체를 복사해 사용한 후 한 스레드가 해당 사본에서 결과를 가져오는 방법 ..?
+- 스레드의 독립적 구현
+  - 자원을 공유하지 않는다
+    - 보통 db를 사용하므로 자원을 공유하지 않는게 힘들다..
+
+#### 라이브러리를 이해하라
 - 스레드 환경에서 사용해도 안전한 컬렉션이 있다.
-  - java.util.concurent
-  - java.util.concurrent.atomic
-  - java.util.cocurrent.locks
-  
+  - 패키지
+    - java.util.concurent
+    - java.util.concurrent.atomic
+    - java.util.cocurrent.locks
+  - ConcurrentHashMap
+    - HashMap과의 차이는 key,value에 null을 허용하지 않음
+    - HashTable 도 있지만, ConcurrentHashMap이 성능이 더 좋다. 
+      - 이유는 HashTable은 단순하게 메서드에 sysnchronized가 붙어 있지만, 
+        ConCurrentHashMap은 배열 아이템 별로 동기화처리를 하고 있기 때문 https://tomining.tistory.com/169
+    - HashMap보다 ConcurrentHashMap이 더 빠르다고? 
+      - 나와 같은 궁금증이 생긴 개발자 https://stackoverrun.com/ko/q/1686913
+      - 성능 비교 https://j-i-y-u.tistory.com/30
+  - ReentrantLock
+    - 한 메서드에서 잠그고 다른 메서드에서 푸는 락(lock)이다
+  - Semaphore
+    - 전형적인 세마포다. 개수(count)가 있는 락이다.
+  - CountDownLatch
+    -  지정한 수만큼 이벤트가 발생하고 나서야 대기 중인 스레드를 모두 해제 하는 락이다. 모든 스레드에게 동시에 공평하게 시작할 기회를 준다.
+
+#### 실행 모델을 이해하라
 - 스레드 환경의 실행모델
   - 한정된 자원 (Bound Resource)
     - 다중 스레드 환경에서 사용하는 자원으로, 크기나 숫자가 제한적이다. 데이터베이스 연결, 길이가 일정한 읽기/쓰기 버퍼 등이 예다.
