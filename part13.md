@@ -78,11 +78,56 @@
       - 나와 같은 궁금증이 생긴 개발자 https://stackoverrun.com/ko/q/1686913
       - 성능 비교 https://j-i-y-u.tistory.com/30
   - ReentrantLock
-    - 한 메서드에서 잠그고 다른 메서드에서 푸는 락(lock)이다
+    - **시작점과 끝점을 수동으로 설정이 가능**한 명시적인 동기화
+    ```java
+    public class reentrantlock {
+
+      private final ReentrantLock locker = new ReentrantLock(); 
+
+      public void method () { 
+        locker.lock();
+
+        try { 
+          // 동기화내용들... 
+        } catch (Exception e) { 
+
+        } finally { 
+          locker.unlock(); 
+        }
+      }
+    }    
+    ```
+    - method
+      - await() = wait()
+      - signal() = notify()
+      - signalAll() = notifyAll()
+      ```java
+      public class reentrantlock {
+
+        private final ReentrantLock locker = new ReentrantLock(); 
+        private final Condition lockerCondition = locker.newCondition();
+
+        public void method () { 
+          locker.lock();
+
+          try { 
+            // 동기화내용들... 
+            lockerCondition.await();
+            lockerCondition.signal();
+            lockerCondition.signalAll();
+          } catch (Exception e) { 
+
+          } finally { 
+            locker.unlock(); 
+
+          }
+        }
+      }
+      ```
   - Semaphore
-    - 전형적인 세마포다. 개수(count)가 있는 락이다.
+    - 동시 접근 Thread 갯수 제어
   - CountDownLatch
-    -  지정한 수만큼 이벤트가 발생하고 나서야 대기 중인 스레드를 모두 해제 하는 락이다. 모든 스레드에게 동시에 공평하게 시작할 기회를 준다.
+    -  쓰레드를 N개 실행했을 때, 일정 개수의 쓰레드가 모두 끝날 때 까지 기다려야지만 다음으로 진행할 수 있거나 다른 쓰레드를 실행시킬 수 있는 경우 사용
 
 #### 실행 모델을 이해하라
 - 스레드 환경의 실행모델
