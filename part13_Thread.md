@@ -1,5 +1,5 @@
 ### Thread
-- 자바의신 및 여러 인터넷 블로그
+- 자바의신
 
 #### 기본 동작
 - 동작?
@@ -234,3 +234,23 @@ ModifyAmountThread thread1 = new ModifyAmountThread(calc, true);
 ModifyAmountThread thread2 = new ModifyAmountThread(calc, true);
 ```
 
+##### 쓰레드를 통제하는 메소드
+- Thread.State(enum 클래스)
+  -  NEW : 쓰레드 객체는 생성 되었지만, 아직 시작되지는 않은 상태
+  - RUNNABLE : 쓰레드가 실행중인 상태
+  - BLOCKED : 쓰레드가 실행 중지 상태이며 모니터락이 풀리기를 기다리는 상태
+  - WATTING : 쓰레드가 대기중인 상태
+  - TIMED_WATTING : 특정시간만큼 쓰레드가 대기중인 상태
+  - TERMINATED : 쓰레드가 종료된 상태
+
+- 메서드
+  - join() 
+    - 수행중인 스레드 중지 시까지 기다림
+  - wait()
+    - 다른 쓰레드가 Object 객체에 대한 nofity() 메소드나 notifyAll() 메소드를 호출할 때까지 현재 쓰레드가 대기하고 있도록 한다.
+  - notify()
+    - Object 객체의 모니터에 대기하고 있는 단일 쓰레드를 깨운다
+  - notifyAll()
+    - Object 객체의 모니터에 대기하고 있는 모든 쓰레드를 깨운다.
+  - 모니터?
+    - lock 객체와 같이 쓰레드가 안전하게 수행하도록 도와주는 객체
