@@ -97,3 +97,23 @@ w
 q
 ===============
 ```
+
+### 신기한 for문?!
+- 이런 for문이 있다!? 처음봄..
+```java
+	private ListIterator lit;
+	private Iterator its;
+
+	@Test
+	public void forforIterator() {
+		List list = new ArrayList(Arrays.asList("q", "w", "e", "r"));
+
+		for (lit = list.listIterator(); lit.hasNext();) {
+			System.out.println(lit.next());
+		}
+
+		for (its = list.iterator(); its.hasNext();)
+			System.out.println(its.next());
+
+	}
+```
