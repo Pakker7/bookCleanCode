@@ -234,6 +234,11 @@ ModifyAmountThread thread1 = new ModifyAmountThread(calc, true);
 ModifyAmountThread thread2 = new ModifyAmountThread(calc, true);
 ```
 
+##### synchronized의 문제점
+- synchronized가 붙은 함수 안에서만 안정을 보장해 주기 때문에, 이 함수 말고 연결된 모든 메소드들에서 이게 깨지게 된다.. 그럼 어떻게...
+  - 관련된 모든 함수에다 synchronized를 붙여야 하는건지... 그러면 병목현상이 생기니깐.. 흠 이거 자체가 문제가 되는지..
+  
+
 ##### 쓰레드를 통제하는 메소드
 - Thread.State(enum 클래스)
   -  NEW : 쓰레드 객체는 생성 되었지만, 아직 시작되지는 않은 상태
