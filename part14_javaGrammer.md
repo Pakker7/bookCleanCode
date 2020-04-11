@@ -29,7 +29,6 @@ l
   - void remove() 요소 삭제, next()로 출력 후 사용하면 됨
 
 - Map 에서 사용시
-  - 
   ```java
   	@Test
     public void h() {
