@@ -249,18 +249,64 @@ public class ComparisonCompactor {
 	}
 	
     ```
-  - 
-
-- p.334 숨겨진 시간적인 결합(p.390 참고)
-  - 함수를 짤 때는 함수 **인수**를 적절히 배치해 *함수가 호출되는 순서*를 명백히 드러낸다.
-  - 시간적인 결합을 강제하지 않으면, 에러가 일어날 수 있는 함수에서만 **숨겨진 시간적인 결합**을 사용한다.
-  - 인수를 일부러 만드는 것이므로, 시각적으로 함수가 지저분해 보일 수 있다. 그러나 시간적 결합이 필요하다면 사용하라
-  
-- p.334 일관성을 유지(p.391 참고)
+  - 하나의 함수는 하나의 역할을 할 것
+    - 예상문자열, 실제문자열 압축 / 형식 맞추기 를 분리한다.
+    - 멤버 변수 승격
+      ```java
+          private String compactExpected;
+    	  private String compactActual;
+      ```
+  - G11 : 일관성 부족
+    - 최소 놀람의 원칙 ?!
+      - 코드가 읽는 이를 놀라게 해서는 안된다. (해서 최소놀람?!) 표준 코딩 컨벤션을 따르고 주석과 명명이 의미 전달을 잘 해야 하며, 잠재적으로 놀래킬 수 있는 부작용을 최소화 하라 라는 의미
+      - 함수에서 response 변수에 HttpServletResponse 인스턴스를 저장했다면 다른 곳에서도 동일 사용 하기
+      - 변수 외에도 함수 내부의 구조라던지.. 이런것도 가독성을 높이게 짜라는 뜻인것 같다
+  - prefix, sufix -> prefixIndex, sufixIndex 
+  - N1: 서술적인 이름(정확한)을 사용하라  
+  - G31 : p.334 숨겨진 시간적인 결합
+    - 함수를 짤 때는 함수 **인수**를 적절히 배치해 *함수가 호출되는 순서*를 명백히 드러낸다.
+    - 시간적인 결합을 강제하지 않으면, 에러가 일어날 수 있는 함수에서만 **숨겨진 시간적인 결합**을 사용한다.
+    - 인수를 일부러 만드는 것이므로, 시각적으로 함수가 지저분해 보일 수 있다. 그러나 시간적 결합이 필요하다면 사용하라
+    ```java
+    public class MoogDriver {
+	Gradient gradient;
+	List<Spline> splines;
+	
+	public void dive(String reason) {
+		saturateGradient();	// 순서대로 호출해야 함
+		reticulateSplines();
+		diveForMoog(reason);
+	}
+    }
+    ```
+    ```java
+    public class MoogDriver {
+	Gradient gradient;
+	List<Spline> splines;
+	
+	public void dive(String reason) {
+		Gradient gradient = saturateGradient();
+		List<Spline> splines = reticulateSplines(gradient); // 파라미터를 넘겨 시간적 결합
+		diveForMoog(splines ,reason);
+	}
+    }
+    ```
+    - 인자 추가
+    ```java
+    this.suffixIndex = this.findCommonSuffix(this.prefixIndex);
+    ```
+    -  그러나 인자를 추가하는 건...
+  - G32 : 일관성을 유지
   - 코드 구조를 잡을 때는 이유를 고민할 것 
   - *코드에 일관성이 없으면* 남들은 *맘대로 바꿔도 된다*라고 생각한다.
   
-- p.336 경계 조건을 캡슐화 하라(p.392 참고)
+  - 다른 방법
+  ```java
+  findCommonPrefixAndSuffix();
+  ```
+  //
+  
+- G33 : 경계 조건을 캡슐화 하라
   - 결계 조건은 빼먹거나 놓치기 쉽다. 경계 조건은 한곳에서 별도로 처리한다. 
   - ex. length +1 이런거..
 
