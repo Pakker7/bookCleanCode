@@ -211,8 +211,45 @@ public class ComparisonCompactor {
   String failure = new ComparisonCompactor(1, "abcf", "abcdef").compact("de");
   ```
   
-- 오늘은 모르겠지만 내일 다시보면 이해가 되겠지...
+- 오늘은 모르겠지만 내일 다시보면 이해가 되겠지... .. .... .... ... . .. . . . . . . 
 - 참고할 곳 https://github.com/ivvve/What-I-study/commits/master/book/CleanCode/code_examples/src/main/java/org/junit/ComparisonCompactor.java
+
+- p.332 public String formatCompactedCompa rison(St ring message) {} 안의 함수
+  - G30 : 함수는 한가지만 해야 한다
+    - 3장 한가지만 해라 참고
+    - 함수를 짜다 보면 한 함수안에 여러 단락을 이어, 일련의 작업을 수행하고픈 유혹에 빠진다. 
+    - 한 가지만 수행 하는 좀더 작은 함수 여럿으로 나눠야 마땅하다.
+    ```java
+    	public void pay() {
+		for(Employee e : employees) {				1. 직원목록 돌리기
+			if (e.isPayday()) { 				2. payDay 확인
+				Money pay = e.calculatePay(); 		3. 봉급 계산
+				e.deliverPay(pay);			4. 지급
+			}
+
+		}
+	}
+    ```
+    - 이렇게 나눠버리기
+    ```java
+    	public void pay() {
+		List<Employee> employees = new ArrayList();
+		for(Employee e : employees)
+			payIfNecessary(e);
+	}
+	
+	private void payIfNecessary(Employee e) {
+		if (e.isPayday()) 
+			calculateAndDeliverPay(e);
+	}
+	
+	private void calculateAndDeliverPay(Employee e) {
+		Money pay = e.calculatePay(); 
+		e.deliverPay(pay);
+	}
+	
+    ```
+  - 
 
 - p.334 숨겨진 시간적인 결합(p.390 참고)
   - 함수를 짤 때는 함수 **인수**를 적절히 배치해 *함수가 호출되는 순서*를 명백히 드러낸다.
