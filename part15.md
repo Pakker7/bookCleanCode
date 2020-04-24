@@ -302,12 +302,23 @@ public class ComparisonCompactor {
   
   - 다른 방법
   ```java
-  findCommonPrefixAndSuffix();
+  findCommonPrefixAndSuffix(); // 한번에 선언 후 함수 내부에서 수정
   ```
-  //
-  
+    - 이렇게 순서를 정한다.
+- 정확하지 않은 length()(suffixIndex, prefixIndex..) 관련 함수를 헷갈리지 않게 수정한다. 
 - G33 : 경계 조건을 캡슐화 하라
-  - 결계 조건은 빼먹거나 놓치기 쉽다. 경계 조건은 한곳에서 별도로 처리한다. 
-  - ex. length +1 이런거..
-
-- 전체를 완벽히 이해한 건 아니지만, 리펙토링 과정을 따라간 것으로 충분히 도움이 된다. 나중에 한번더 봐야지
+  - 경계 조건은 빼먹거나 놓치기 쉽다. 경계 조건은 한곳에서 별도로 처리한다. 
+  ```java
+  if(level +1 < tags.length) {						// 2 번나오는 level+1
+  	parts = new Parse(body, tagd, level+1, offset + endTag);
+	body = null;
+  }
+  ```
+  ```java
+  int nextLevel = level + 1;					//캡슐화
+  if(nextLevel < tags.length) {						
+  	parts = new Parse(body, tagd, nextLevel, offset + endTag);
+	body = null;
+  }
+ 
+  ```
