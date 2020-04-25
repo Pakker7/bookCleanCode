@@ -1,3 +1,7 @@
+### LocalDate
+- LocalDate 를쓰면, new Date() 보다 plus, minus가 엄청 쉽게됨. 프린트는 YYYYMMDD로 출력 됨
+- LocalDateTime 도 있음 이건 전체 출력
+
 ### 신기한 for문 2
 ```java
 		for (; this.fPrefix < end; this.fPrefix++) {
